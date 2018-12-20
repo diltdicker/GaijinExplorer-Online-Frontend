@@ -10,6 +10,7 @@ import { MangaComponent } from './manga/manga.component';
 import { ChapterComponent } from './chapter/chapter.component';
 import { SearchResultComponent } from './search-result/search-result.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { MangaManagerService } from './manga-manager.service';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AppRoutingModule,
     ResponsiveModule.forRoot()
   ],
-  providers: [],
+  providers: [MangaManagerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
