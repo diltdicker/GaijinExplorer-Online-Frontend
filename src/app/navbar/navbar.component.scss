@@ -1,0 +1,12 @@
+// colors
+
+$primary: #333;
+$secondary: #696969;
+$accent: #e92cd9;
+
+div.navigation-bar {
+    background-color: $primary;
+    height: 50px;
+    widows: 100%;
+    color: $accent;
+}
