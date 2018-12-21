@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MangaManagerService } from '../manga-manager.service';
-import { from } from 'rxjs';
+import { from, Observable } from 'rxjs';
+import { IMangaLite } from '../interfaces/IMangaLite';
 
 @Component({
   selector: 'app-manga-selection',
@@ -9,11 +10,16 @@ import { from } from 'rxjs';
 })
 export class MangaSelectionComponent implements OnInit {
 
-  public mangaObjs = [];
+  public mangas: IMangaLite[] = [];
 
-  constructor() { }
+  public testString = 'test';
+
+  constructor(private _mangaManagerService: MangaManagerService) { }
 
   ngOnInit() {
+    this._mangaManagerService.getMangas().subscribe(
+      data => this.mangas = data
+    );
   }
 
 }

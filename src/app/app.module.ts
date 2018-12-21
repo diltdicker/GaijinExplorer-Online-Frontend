@@ -11,6 +11,7 @@ import { ChapterComponent } from './chapter/chapter.component';
 import { SearchResultComponent } from './search-result/search-result.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { MangaManagerService } from './manga-manager.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { MangaManagerService } from './manga-manager.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ResponsiveModule.forRoot()
+    ResponsiveModule.forRoot(),
+    HttpClientModule
   ],
   providers: [MangaManagerService],
   bootstrap: [AppComponent]
