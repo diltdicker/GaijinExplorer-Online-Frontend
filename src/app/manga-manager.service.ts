@@ -110,12 +110,12 @@ export class MangaManagerService {
     return this._imageURL;
   }
 
-  getShuffled112Mangas(): Observable<IMangaLite[]> {
+  getShuffled144Mangas(): Observable<IMangaLite[]> {
     return new Observable((observer) => {
       this._mangaList.subscribe(
         function(data) {
           data = MangaManagerService.shuffle(data);
-          observer.next(data.slice(0, 112));
+          observer.next(data.slice(0, 144));
           observer.complete();
         }
       );

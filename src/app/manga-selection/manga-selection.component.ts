@@ -20,7 +20,7 @@ export class MangaSelectionComponent implements OnInit {
 
   ngOnInit() {
     this.cdnURL = this._mangaManagerService.getImageURL();
-    this._mangaManagerService.getShuffled112Mangas().subscribe(
+    this._mangaManagerService.getShuffled144Mangas().subscribe(
       data => this.mangas = data
     );
     // this.testString = this._mangaManagerService.getImageBytes('89/895a2f7c551df340121483918440668e585c8a6de6b2300cc6fb2e9d.png');
