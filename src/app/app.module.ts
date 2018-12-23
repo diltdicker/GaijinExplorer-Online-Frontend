@@ -14,6 +14,7 @@ import { SearchResultComponent } from './search-result/search-result.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 
 import { MangaManagerService } from './manga-manager.service';
+import { MangaDetailsComponent } from './manga-details/manga-details.component';
 // import { TestServService } from './test-serv.service';
 
 @NgModule({
@@ -24,7 +25,8 @@ import { MangaManagerService } from './manga-manager.service';
     MangaComponent,
     ChapterComponent,
     SearchResultComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    MangaDetailsComponent
   ],
   imports: [
     BrowserModule,

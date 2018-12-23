@@ -219,15 +219,36 @@ export class MangaManagerService {
   }
 
   assignCurrentManga(id: string) {
-    this._http.get<IManga>(this._apiURL + '/manga' + id + '/').subscribe(
+    this._http.get<IManga>(this._apiURL + 'manga/' + id + '/').subscribe(
       data => {
         this._sharedCurrentManga.next(data);
       }
     );
   }
 
+  /**
+   * Grabs the current manga (shared observable)
+   */
   getCurrentManga(): BehaviorSubject<IManga> {
     return this._sharedCurrentManga;
+  }
+
+  /**
+   * [image number (number), image path, hits?, hits?]
+   * @param chapterId string - id of the chapter
+   */
+  getObservableChapter(chapterId: string): Observable<IChapter> {
+    return new Observable((observer) => {
+      this._http.get<IChapter>(this._apiURL + 'chapter/' + chapterId).subscribe(
+        (data: IChapter) => {
+          console.log('chapter: ' + data);
+          // sorts images in correct order
+          data.images = data.images.reverse();
+          observer.next(data);
+          observer.complete();
+        }
+      );
+    });
   }
 
   // setCurrentManga(manga: IMangaLite) {
