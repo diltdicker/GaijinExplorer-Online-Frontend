@@ -24,7 +24,7 @@
 
   <!-- Brand -->
   <div class="col-sm-3">
-    <a class="navbar-brand" href="/">Gaijin Explorer Online</a>
+    <a class="navbar-brand" routerLink="/" routerLinkActive="active">Gaijin Explorer Online</a>
   </div>
 
   <!-- Toggler/collapsibe Button -->
@@ -56,9 +56,9 @@
 
   <div class="col-sm-5 justify-content-right" style="margin-top:5px;">
     <div class="input-group">
-      <input type="text" placeholder="Search" class="form-control">
+      <input type="text" placeholder="Search" #searchInput class="form-control" (keyup.enter)="onSearch(searchInput.value)">
       <span class="input-group-btn">
-        <button type="submit" class="btn btn-secondary">
+        <button type="submit" class="btn btn-secondary" (click)="onSearch(searchInput.value)">
             <i class="fas fa-search"></i>
         </button>
       </span>

@@ -12,7 +12,7 @@ import { SearchResultComponent } from './search-result/search-result.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { MangaManagerService } from './manga-manager.service';
 import { HttpClientModule } from '@angular/common/http';
-// import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @NgModule({
   declarations: [
@@ -28,8 +28,8 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     ResponsiveModule.forRoot(),
-    HttpClientModule
-    // LazyLoadImageModule
+    HttpClientModule,
+    LazyLoadImageModule
   ],
   providers: [MangaManagerService],
   bootstrap: [AppComponent]

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MangaManagerService } from '../manga-manager.service';
 import { from, Observable } from 'rxjs';
 import { IMangaLite } from '../interfaces/IMangaLite';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-manga-selection',
@@ -16,7 +17,7 @@ export class MangaSelectionComponent implements OnInit {
   public testString = 'https://cdn.mangaeden.com/mangasimg/89/895a2f7c551df340121483918440668e585c8a6de6b2300cc6fb2e9d.png';
   public defaultImage = '/assets/load_image.png';
 
-  constructor(private _mangaManagerService: MangaManagerService) { }
+  constructor(private _mangaManagerService: MangaManagerService, private _router: Router) { }
 
   ngOnInit() {
     this.cdnURL = this._mangaManagerService.getImageURL();
@@ -27,6 +28,10 @@ export class MangaSelectionComponent implements OnInit {
     // this._mangaManagerService.getImageBytes();
   }
 
+  onClick(manga) {
+    console.log(manga);
+    this._router.navigate(['/manga', manga.i]);
+  }
   // public getImage(path) {
   //   console.log(this.imageURL + path);
   //   if (path == null) {

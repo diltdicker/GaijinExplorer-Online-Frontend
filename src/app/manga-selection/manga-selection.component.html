@@ -46,9 +46,10 @@
 <div class="row d-flex align-items-end">
   <!-- The loop includes the element it is declared on -->
   <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 manga-div" *ngFor="let manga of mangas; let i = index" [attr.data-index]="i">
-    <div class="card text-center manga">
+    <div class="card text-center manga" (click)="onClick(manga)">
       <!-- <div class="card-body"> -->
-        <img class="card-img-top" [src]="cdnURL + manga.im" [alt]="manga.a">
+        <!-- <img class="card-img-top" [src]="cdnURL + manga.im" [alt]="manga.a"> -->
+        <img class="card-img-top" [lazyLoad]="cdnURL + manga.im" [alt]="manga.a">
         <h3 class="card-title manga-title">{{manga.t}}</h3>
       <!-- </div> -->
     </div>

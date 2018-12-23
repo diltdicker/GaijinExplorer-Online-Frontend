@@ -1,7 +1,7 @@
 import { Injectable, SystemJsNgModuleLoader } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { throwError as observableThrowError, Observable, of, from } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { throwError as observableThrowError, Observable, of, from, BehaviorSubject } from 'rxjs';
+import { catchError, share } from 'rxjs/operators';
 import { IManga } from './interfaces/IManga';
 import { IMangaLite } from './interfaces/IMangaLite';
 import { IMangaList } from './interfaces/IMangaList';
@@ -12,6 +12,8 @@ import { IChapter } from './interfaces/IChapter';
 })
 export class MangaManagerService {
 
+  private _sharedMangaList = new BehaviorSubject([]);
+  private _inMemoryMangas: IMangaLite[] = null;
   private _mangaList: Observable<IMangaLite[]>;
   // TODO make static so that it is not reloaded everytime someoneone goes back to the homepage
   private _mangaObjs: Observable<IMangaLite[]> = new Observable((observer) => {
@@ -20,6 +22,8 @@ export class MangaManagerService {
         // console.log(data.manga);
         // this.mangaObjs = of(data.manga);
         // console.log();
+        // this._sharedMangaList = new BehaviorSubject(data.manga);
+        this._sharedMangaList.next(data.manga);
         observer.next(data.manga);
         observer.complete();
         // console.log(data.manga);
@@ -33,9 +37,16 @@ export class MangaManagerService {
   private _imageURL = 'https://cdn.mangaeden.com/mangasimg/';
   private isLibLoaded = false;
 
+  // private _sharedMangaList = this._mangaList.share();
+
   constructor(private _http: HttpClient) {
     console.log('service constructor');
     this._mangaList = this.getMangaList();
+    // this._http.get<IMangaList>(this._apiURL + 'list/0').subscribe(
+    //   function(data) {
+    //     this._sharedMangaList.next(data.manga);
+    //   }
+    // );
    }
 
   // getMangaString() {
@@ -59,6 +70,7 @@ export class MangaManagerService {
     return new Observable((observer) => {
       this._http.get<IMangaList>(this._apiURL + 'list/0').subscribe(
         function(data) {
+          console.log('http request');
           observer.next(data.manga);
           observer.complete();
           console.log('size: ' + data.manga.length);
@@ -78,10 +90,17 @@ export class MangaManagerService {
     return this._mangaList;
   }
 
-  getManga(id): Observable<IManga> {
+  getObservableManga(id): Observable<IManga> {
     this._currentManga = new Observable((observer) => {
+      this._http.get<IManga>(this._apiURL + 'manga/' + id).subscribe(
+        function(data) {
+          observer.next(data);
+          observer.complete();
+        }
+      );
     });
     return this._currentManga;
+    return null;
   }
 
   getChapter(id): Observable<IChapter> {
@@ -113,6 +132,7 @@ export class MangaManagerService {
   getShuffled144Mangas(): Observable<IMangaLite[]> {
     return new Observable((observer) => {
       this._mangaList.subscribe(
+      // this._sharedMangaList.subscribe(
         function(data) {
           data = MangaManagerService.shuffle(data);
           observer.next(data.slice(0, 144));
@@ -141,7 +161,20 @@ export class MangaManagerService {
     );
   }
 
-  pullMangas() {
+  getSharedMangas() {
+    return this._sharedMangaList;
+  }
+
+  // setCurrentManga(manga: IMangaLite) {
+  //   this._currentManga = {
+  //     id: manga.i,
+  //     title: manga.t
+  //   };
+  // }
+
+  // setCurrentManga()
+
+  // pullMangas() {
     // console.log('pull');
     // this._http.get<IMangaList>(this._apiURL + 'list/0').subscribe(
     //   function(data) {
@@ -155,7 +188,7 @@ export class MangaManagerService {
     //     console.log(data.manga);
     //   }
     // );
-  }
+  // }
 
   getDummyArray() {
     return ['1 pear tree', '2 hens a laying', '3 french hens', '4 doves a cooing', '5 golden rings, bah dum dum dum'];
