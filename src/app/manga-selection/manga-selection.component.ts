@@ -3,7 +3,7 @@ import { MangaManagerService } from '../manga-manager.service';
 import { from, Observable } from 'rxjs';
 import { IMangaLite } from '../interfaces/IMangaLite';
 import { Router } from '@angular/router';
-import { TestServService } from '../test-serv.service';
+// import { TestServService } from '../test-serv.service';
 
 @Component({
   selector: 'app-manga-selection',
@@ -18,14 +18,14 @@ export class MangaSelectionComponent implements OnInit {
   public testString = 'https://cdn.mangaeden.com/mangasimg/89/895a2f7c551df340121483918440668e585c8a6de6b2300cc6fb2e9d.png';
   public defaultImage = '/assets/load_image.png';
 
-  constructor(private _mangaManagerService: MangaManagerService, private _router: Router, private _testServService: TestServService) { }
+  constructor(private _mangaManagerService: MangaManagerService, private _router: Router) { }
 
   ngOnInit() {
-    this._testServService.getServiceValue().subscribe(
-      function(num) {
-        console.log('manager' + num);
-      }
-    );
+    // this._testServService.getServiceValue().subscribe(
+    //   function(num) {
+    //     console.log('manager' + num);
+    //   }
+    // );
     // console.log('manager' + this._testServService.getServiceValue());
     this.cdnURL = this._mangaManagerService.getImageURL();
     this._mangaManagerService.getShuffledMangas().subscribe(

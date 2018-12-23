@@ -16,6 +16,16 @@ export class MangaManagerService {
   private _inMemoryMangas: IMangaLite[] = null;
   private _mangaList: Observable<IMangaLite[]>;
   private _shuffledMangas = new BehaviorSubject(new Array<IMangaLite>());
+  private _sharedCurrentManga = new BehaviorSubject({
+    id: 'missing',
+    title: 'missing',
+    artist: 'missing',
+    author: 'missing',
+    categories: new Array<string>(),
+    description: 'missing',
+    chapters: new Array<Array<any>>(),
+    last_chapter_date: 0
+  });
   // TODO make static so that it is not reloaded everytime someoneone goes back to the homepage
   // private _mangaObjs: Observable<IMangaLite[]> = new Observable((observer) => {
   //   this._http.get<IMangaList>(this._apiURL + 'list/0').subscribe(
@@ -117,8 +127,10 @@ export class MangaManagerService {
 
   getObservableManga(id): Observable<IManga> {
     this._currentManga = new Observable((observer) => {
-      this._http.get<IManga>(this._apiURL + 'manga/' + id).subscribe(
-        function(data) {
+      this._http.get<IManga>(this._apiURL + 'manga/' + id + '/').subscribe(
+        data => {
+          console.log('url: ' + this._apiURL + 'manga/' + id);
+          console.log('getObsMnga ' + data.title);
           observer.next(data);
           observer.complete();
         }
@@ -204,6 +216,18 @@ export class MangaManagerService {
 
   getShuffledMangas(): BehaviorSubject<IMangaLite[]> {
     return this._shuffledMangas;
+  }
+
+  assignCurrentManga(id: string) {
+    this._http.get<IManga>(this._apiURL + '/manga' + id + '/').subscribe(
+      data => {
+        this._sharedCurrentManga.next(data);
+      }
+    );
+  }
+
+  getCurrentManga(): BehaviorSubject<IManga> {
+    return this._sharedCurrentManga;
   }
 
   // setCurrentManga(manga: IMangaLite) {

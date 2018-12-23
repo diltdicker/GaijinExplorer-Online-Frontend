@@ -14,7 +14,7 @@ import { SearchResultComponent } from './search-result/search-result.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 
 import { MangaManagerService } from './manga-manager.service';
-import { TestServService } from './test-serv.service';
+// import { TestServService } from './test-serv.service';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,7 @@ import { TestServService } from './test-serv.service';
     HttpClientModule,
     LazyLoadImageModule
   ],
-  providers: [MangaManagerService, TestServService],
+  providers: [MangaManagerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
