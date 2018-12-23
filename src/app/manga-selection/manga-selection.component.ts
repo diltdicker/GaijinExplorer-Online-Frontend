@@ -3,6 +3,7 @@ import { MangaManagerService } from '../manga-manager.service';
 import { from, Observable } from 'rxjs';
 import { IMangaLite } from '../interfaces/IMangaLite';
 import { Router } from '@angular/router';
+import { TestServService } from '../test-serv.service';
 
 @Component({
   selector: 'app-manga-selection',
@@ -17,15 +18,28 @@ export class MangaSelectionComponent implements OnInit {
   public testString = 'https://cdn.mangaeden.com/mangasimg/89/895a2f7c551df340121483918440668e585c8a6de6b2300cc6fb2e9d.png';
   public defaultImage = '/assets/load_image.png';
 
-  constructor(private _mangaManagerService: MangaManagerService, private _router: Router) { }
+  constructor(private _mangaManagerService: MangaManagerService, private _router: Router, private _testServService: TestServService) { }
 
   ngOnInit() {
+    this._testServService.getServiceValue().subscribe(
+      function(num) {
+        console.log('manager' + num);
+      }
+    );
+    // console.log('manager' + this._testServService.getServiceValue());
     this.cdnURL = this._mangaManagerService.getImageURL();
-    this._mangaManagerService.getShuffled144Mangas().subscribe(
+    this._mangaManagerService.getShuffledMangas().subscribe(
       data => this.mangas = data
     );
     // this.testString = this._mangaManagerService.getImageBytes('89/895a2f7c551df340121483918440668e585c8a6de6b2300cc6fb2e9d.png');
     // this._mangaManagerService.getImageBytes();
+    // this._mangaManagerService.getSharedMangas().subscribe(
+      // function(data: IMangaLite[]) {
+      //   console.log('manager1: ');
+      //   this.mangas = data;
+      // }
+    //   data => this.mangas = data
+    // );
   }
 
   onClick(manga) {
