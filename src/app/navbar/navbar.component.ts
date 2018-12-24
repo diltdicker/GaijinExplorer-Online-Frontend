@@ -12,4 +12,8 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
   }
 
+  onSearch(searchInput) {
+    console.log('search: ' + searchInput);
+  }
+
 }

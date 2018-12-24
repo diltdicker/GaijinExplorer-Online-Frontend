@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MangaManagerService } from '../manga-manager.service';
-import { from } from 'rxjs';
 
 @Component({
   selector: 'app-not-found',
