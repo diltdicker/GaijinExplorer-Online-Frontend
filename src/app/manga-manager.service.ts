@@ -1,4 +1,4 @@
-import { Injectable, SystemJsNgModuleLoader } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { throwError as observableThrowError, Observable, of, from, BehaviorSubject } from 'rxjs';
 import { catchError, share } from 'rxjs/operators';
@@ -12,10 +12,14 @@ import { IChapter } from './interfaces/IChapter';
 })
 export class MangaManagerService {
 
-  public currentImageIndex = -1;
+  public sharedChapterImageIndex = -1;
 
-  private _sharedMangaList = new BehaviorSubject(new Array<IMangaLite>());
-  private _shuffledMangas = new BehaviorSubject(new Array<IMangaLite>());
+  private _sharedMangaList: BehaviorSubject<IMangaLite[]> = new BehaviorSubject(new Array<IMangaLite>());
+  private _shuffledMangas: BehaviorSubject<IMangaLite[]> = new BehaviorSubject(new Array<IMangaLite>());
+  private _sharedChapter: BehaviorSubject<IChapter> = new BehaviorSubject({
+    images: new Array<any>()
+  });
+  private _sharedImageURL: BehaviorSubject<string> = new BehaviorSubject('');
   private _sharedCurrentManga = new BehaviorSubject({
     id: 'missing',
     title: 'missing',
@@ -91,11 +95,36 @@ export class MangaManagerService {
   }
 
   /**
+   * returns a the current shared Chapter as a BehaviorSubject
+   */
+  getSharedChapter(): BehaviorSubject<IChapter> {
+    return this._sharedChapter;
+  }
+
+  /**
+   * sets the current chapter values and initializes ImageIndex
+   * @param id string - id of the chapter
+   * @param callback callback method - optional
+   */
+  assignCurrentChapter(id: string, callback?: () => void) {
+    this._http.get<IChapter>(this._apiURL + 'chapter/' + id).subscribe(
+      (data: IChapter) => {
+        data.images = data.images.reverse();
+        this._sharedChapter.next(data);
+        this.sharedChapterImageIndex = 0;
+        if (callback !== undefined) {
+          callback();
+        }
+      }
+    );
+  }
+
+  /**
    * Sets the current manga as a shared observable after grabbing it
    * @param id string - id of the manga to be set as the shared manga
    */
   assignCurrentManga(id: string) {
-    this._http.get<IManga>(this._apiURL + 'manga/' + id + '/').subscribe(
+    this._http.get<IManga>(this._apiURL + 'manga/' + id).subscribe(
       data => {
         this._sharedCurrentManga.next(data);
       }
@@ -107,6 +136,44 @@ export class MangaManagerService {
    */
   getCurrentManga(): BehaviorSubject<IManga> {
     return this._sharedCurrentManga;
+  }
+
+  getNextImage(): any {
+    this._sharedChapter.subscribe(
+      (data: IChapter) => {
+        if (this.sharedChapterImageIndex < data.images.length && this.sharedChapterImageIndex !== -1) {
+          this.sharedChapterImageIndex++;
+          return (this._imageURL + data.images[this.sharedChapterImageIndex - 1][1]);
+        } else {
+          return null;
+        }
+      }
+    );
+  }
+
+  queueNextImage() {
+    this._sharedChapter.subscribe(
+      (data: IChapter) => {
+        this.sharedChapterImageIndex++;
+        if (this.sharedChapterImageIndex !== -1 && this.sharedChapterImageIndex < data.images.length) {
+          this._sharedImageURL.next(this._imageURL + data.images[this.sharedChapterImageIndex][1]);
+        }
+      }
+    );
+  }
+
+  getNextImageObservable(): BehaviorSubject<string> {
+    return this._sharedImageURL;
+  }
+
+  assignNextImageObservable() {
+    this._sharedChapter.subscribe(
+      (data: IChapter) => {
+        if (this.sharedChapterImageIndex !== -1 && this.sharedChapterImageIndex < data.images.length) {
+          this._sharedImageURL.next(this._imageURL + data.images[this.sharedChapterImageIndex][1]);
+        }
+      }
+    );
   }
 
   /**

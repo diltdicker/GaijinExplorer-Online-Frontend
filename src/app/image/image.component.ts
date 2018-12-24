@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MangaManagerService } from '../manga-manager.service';
 
 @Component({
@@ -14,8 +14,12 @@ export class ImageComponent implements OnInit {
 
   ngOnInit() {}
 
+  /**
+   * queues up the next image to be loaded
+   * is called after the <img> (load) event
+   */
   public nextImage() {
-    console.log('get next image');
+    this._mangaManagerService.queueNextImage();
   }
 
 }

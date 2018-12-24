@@ -2,19 +2,11 @@ import {
    Component,
    OnInit,
    ComponentFactoryResolver,
-   Directive,
    ViewChild,
-   ViewContainerRef,
-   ComponentRef,
-   ComponentFactory,
-   Input
+   ViewContainerRef
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IChapter } from '../interfaces/IChapter';
 import { MangaManagerService } from '../manga-manager.service';
-import { Observable, from } from 'rxjs';
-import { element } from '@angular/core/src/render3';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ImageComponent } from '../image/image.component';
 
 @Component({
@@ -23,52 +15,41 @@ import { ImageComponent } from '../image/image.component';
   styleUrls: ['./chapter.component.scss']
 })
 export class ChapterComponent implements OnInit {
-  @ViewChild('imageContainer', {read: ViewContainerRef}) entry: ViewContainerRef;
+
+  @ViewChild('imageContainer', {read: ViewContainerRef}) imageContainer: ViewContainerRef;
 
   public cdnURL: string;
-  public chapter: IChapter = { images: [] }; // use this
-  public images: string[];
-  public chapterImages = [];
-
-  public tmpChapter: IChapter = { images: [] };
-  public tmpIndex = 0;
-  public imageData;
-
-  public asyncImages;
-  public asyncImage;
-
-  tmpInterval: any;
 
   constructor(private _route: ActivatedRoute, private _mangaManagerService: MangaManagerService,
      private _componentFactoryResolver: ComponentFactoryResolver) { }
 
   ngOnInit() {
+    this.imageContainer.clear();
     this.cdnURL = this._mangaManagerService.getImageURL();
-    console.log('chapter');
     this._route.params.subscribe(
       params => {
-        console.log(params);
-        this._mangaManagerService.getObservableChapter(params.chapterId).subscribe(
-          (chapterData: IChapter) => {
-            this.tmpChapter = chapterData;
-          }
-        );
+        this._mangaManagerService.assignCurrentChapter(params.chapterId, () => {
+          this._mangaManagerService.assignNextImageObservable();
+          this.nextImage();
+        });
       }
     );
-    this.nextImage();
   }
 
+  /**
+   * Loads the Next Image and pushes it onto the image container
+   * getNextImageObservable() pushes the next image everytime a new one is queued
+   */
   public nextImage() {
-    console.log('called');
-    this.entry.clear();
     const factory = this._componentFactoryResolver.resolveComponentFactory(ImageComponent);
-    const componentRef = this.entry.createComponent(factory);
-    this.entry.createComponent(factory);
-    this.entry.createComponent(factory);
-  }
-
-  public appImagedLoaded() {
-    console.log('imaged loaded');
+    this._mangaManagerService.getNextImageObservable().subscribe(
+      (img) => {
+        if (img !== undefined && img !== null) {
+          const componentRef = this.imageContainer.createComponent(factory);
+          componentRef.instance.imgPath = img;
+        }
+      }
+    );
   }
 
 }

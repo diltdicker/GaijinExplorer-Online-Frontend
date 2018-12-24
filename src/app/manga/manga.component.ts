@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MangaManagerService } from '../manga-manager.service';
 import { IManga } from '../interfaces/IManga';
-// import { TestServService } from '../test-serv.service';
 
 @Component({
   selector: 'app-manga',
