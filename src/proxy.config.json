@@ -1,0 +1,6 @@
+{
+    "/proxy": {
+        "target" : "https://cdn.mangaeden.com",
+        "secure" : false
+    }
+}

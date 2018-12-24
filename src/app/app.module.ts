@@ -15,6 +15,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
 
 import { MangaManagerService } from './manga-manager.service';
 import { MangaDetailsComponent } from './manga-details/manga-details.component';
+import { from } from 'rxjs';
+import { ImageComponent } from './image/image.component';
 // import { TestServService } from './test-serv.service';
 
 @NgModule({
@@ -26,7 +28,8 @@ import { MangaDetailsComponent } from './manga-details/manga-details.component';
     ChapterComponent,
     SearchResultComponent,
     NotFoundComponent,
-    MangaDetailsComponent
+    MangaDetailsComponent,
+    ImageComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +38,7 @@ import { MangaDetailsComponent } from './manga-details/manga-details.component';
     HttpClientModule,
     LazyLoadImageModule
   ],
+  entryComponents: [ImageComponent],
   providers: [MangaManagerService],
   bootstrap: [AppComponent]
 })

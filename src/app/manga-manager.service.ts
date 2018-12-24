@@ -12,9 +12,9 @@ import { IChapter } from './interfaces/IChapter';
 })
 export class MangaManagerService {
 
+  public currentImageIndex = -1;
+
   private _sharedMangaList = new BehaviorSubject(new Array<IMangaLite>());
-  private _inMemoryMangas: IMangaLite[] = null;
-  private _mangaList: Observable<IMangaLite[]>;
   private _shuffledMangas = new BehaviorSubject(new Array<IMangaLite>());
   private _sharedCurrentManga = new BehaviorSubject({
     id: 'missing',
@@ -26,37 +26,22 @@ export class MangaManagerService {
     chapters: new Array<Array<any>>(),
     last_chapter_date: 0
   });
-  // TODO make static so that it is not reloaded everytime someoneone goes back to the homepage
-  // private _mangaObjs: Observable<IMangaLite[]> = new Observable((observer) => {
-  //   this._http.get<IMangaList>(this._apiURL + 'list/0').subscribe(
-  //     function(data) {
-  //       // console.log(data.manga);
-  //       // this.mangaObjs = of(data.manga);
-  //       // console.log();
-  //       // this._sharedMangaList = new BehaviorSubject(data.manga);
-  //       this._sharedMangaList.next(data.manga);
-  //       observer.next(data.manga);
-  //       observer.complete();
-  //       // console.log(data.manga);
-  //     }
-  //   );
-  // });
-  private _currentManga: Observable<IManga>;
-  private _currentChapterIndex = -1;
-  private _currentChapter: Observable<IChapter>;
   private _apiURL = 'https://www.mangaeden.com/api/';
   private _imageURL = 'https://cdn.mangaeden.com/mangasimg/';
-  private isLibLoaded = false;
 
-  static shuffle(list: any[]): any[] {
+  constructor(private _http: HttpClient) {
+    this.assignSharedMangas();
+   }
+
+  // STATIC FUNCTIONS
+
+   static shuffle(list: any[]): any[] {
     for (let i = list.length - 1; i > 0; i--) {
       const r = Math.floor(Math.random() * (i + 1));
       [list[i], list[r]] = [list[r], list[i]];
       if (i % 25 === 0) {
-        // console.log('i:' + i);
       }
     }
-    // console.log(list.length);
     return list;
   }
 
@@ -68,25 +53,14 @@ export class MangaManagerService {
       return list;
     }
   }
-  // private _sharedMangaList = this._mangaList.share();
 
-  constructor(private _http: HttpClient) {
-    console.log('service constructor');
-    // this._mangaList = this.getMangaList();
-    // this._http.get<IMangaList>(this._apiURL + 'list/0').subscribe(
-    //   function(data) {
-    //     this._sharedMangaList.next(data.manga);
-    //   }
-    // );
-    // this._sharedMangaList = new BehaviorSubject({});
-    this.assignSharedMangas();
-   }
+  // METHODS
 
+  /**
+   * queries the API for the complete collection of mangas
+   * !!! This method is to only be called ONCE !!!
+   */
    assignSharedMangas() {
-     // this._sharedMangaList.next(data.manga);
-    //  function(data: IMangaList) {
-    //   this._shuffledMangas.next(MangaManagerService.shuffleAndReturn144(data.manga));
-    // }
     this._http.get<IMangaList>(this._apiURL + 'list/0').subscribe(
       data => {
         this._sharedMangaList.next(data.manga);
@@ -95,129 +69,31 @@ export class MangaManagerService {
     );
    }
 
-  // getMangaString() {
-  //   // console.log('start req');
-  //   return this._apiURL + 'list/0';
-  // }
-
-  private getMangaList(): Observable<IMangaLite[]> {
-    console.log('Get Manga List');
-    return new Observable((observer) => {
-      this._http.get<IMangaList>(this._apiURL + 'list/0').subscribe(
-        function(data) {
-          console.log('http request');
-          observer.next(data.manga);
-          observer.complete();
-          console.log('size: ' + data.manga.length);
-        },
-        function(error) {
-          console.log(error);
-        }
-      );
-    });
-  }
-
   /**
-   * Gets all the mangas in the entire collection
+   * returns the starting URL path for images that need to be accessed from the CDN
    */
-  getMangas(): Observable<IMangaLite[]> {
-    // console.log('subscribe');
-    return this._mangaList;
-  }
-
-  getObservableManga(id): Observable<IManga> {
-    this._currentManga = new Observable((observer) => {
-      this._http.get<IManga>(this._apiURL + 'manga/' + id + '/').subscribe(
-        data => {
-          console.log('url: ' + this._apiURL + 'manga/' + id);
-          console.log('getObsMnga ' + data.title);
-          observer.next(data);
-          observer.complete();
-        }
-      );
-    });
-    return this._currentManga;
-  }
-
-  getChapter(id): Observable<IChapter> {
-    this._currentChapter = new Observable((observer) => {
-    });
-    return this._currentChapter;
-  }
-
-  getNextChapter(): string {
-    if (this._currentManga === undefined) {
-      return null;
-    } else {
-      return null;
-    }
-  }
-
-  getPreviousChapter(): string {
-    if (this._currentManga === undefined) {
-      return null;
-    } else {
-      return null;
-    }
-  }
-
   getImageURL(): string {
     return this._imageURL;
   }
 
-  getShuffled144Mangas(): Observable<IMangaLite[]> {
-    return new Observable((observer) => {
-      // this._sharedMangaList.subscribe(
-      this.getSharedMangas().subscribe(
-        function(data) {
-          data = MangaManagerService.shuffle(data);
-          observer.next(data.slice(0, 144));
-          observer.complete();
-        }
-      );
-    });
-  }
-
-  getImageBytes() {
-    const url = 'https://cdn.mangaeden.com/mangasimg/5b/5b600dd36f47db39394baf3ec3acdba7307d17c5608be7401dbea092.png';
-    const headers = new HttpHeaders();
-    headers.append('access-control-allow-origin', '*');
-    const options = {
-      headers: headers
-    };
-    console.log(options.headers);
-    this._http.get(url, options).subscribe(
-      function(data) {
-        console.log('dl image:');
-        console.log(data);
-      },
-      function(error) {
-        console.log(error);
-      }
-    );
-  }
-
+  /**
+   * returns the entire collecetion of mangas that can be subscribed to
+   */
   getSharedMangas(): BehaviorSubject<IMangaLite[]> {
-    // return new Observable((observer) => {
-    //   this._sharedMangaList.subscribe(
-    //     function(data: IMangaLite[]) {
-    //       console.log('getSharedMangas: ' + data);
-    //       observer.next(data);
-    //       observer.complete();
-    //     }
-    //   );
-    // });
     return this._sharedMangaList;
   }
 
-  newShuffledMangas() {
-
-  }
-
+  /**
+   * returns a Behavior subject of shuffled mangas that can be subscribed to
+   */
   getShuffledMangas(): BehaviorSubject<IMangaLite[]> {
     return this._shuffledMangas;
   }
 
+  /**
+   * Sets the current manga as a shared observable after grabbing it
+   * @param id string - id of the manga to be set as the shared manga
+   */
   assignCurrentManga(id: string) {
     this._http.get<IManga>(this._apiURL + 'manga/' + id + '/').subscribe(
       data => {
@@ -241,43 +117,11 @@ export class MangaManagerService {
     return new Observable((observer) => {
       this._http.get<IChapter>(this._apiURL + 'chapter/' + chapterId).subscribe(
         (data: IChapter) => {
-          console.log('chapter: ' + data);
-          // sorts images in correct order
-          data.images = data.images.reverse();
+          data.images = data.images.reverse(); // sorts images in correct order
           observer.next(data);
           observer.complete();
         }
       );
     });
   }
-
-  // setCurrentManga(manga: IMangaLite) {
-  //   this._currentManga = {
-  //     id: manga.i,
-  //     title: manga.t
-  //   };
-  // }
-
-  // setCurrentManga()
-
-  // pullMangas() {
-    // console.log('pull');
-    // this._http.get<IMangaList>(this._apiURL + 'list/0').subscribe(
-    //   function(data) {
-    //     // console.log(data.manga);
-    //     // this.mangaObjs = of(data.manga);
-    //     // console.log();
-    //     this.mangaObjs = new Observable((observer) => {
-    //       observer.next(data.manga);
-    //       observer.complete();
-    //     });
-    //     console.log(data.manga);
-    //   }
-    // );
-  // }
-
-  getDummyArray() {
-    return ['1 pear tree', '2 hens a laying', '3 french hens', '4 doves a cooing', '5 golden rings, bah dum dum dum'];
-  }
-  // requestMangas()
 }

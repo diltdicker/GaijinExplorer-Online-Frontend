@@ -1,9 +1,4 @@
-<p>
-  manga-details works!
-</p>
-<h3>{{manga.title}}</h3>
+<h1>{{manga.title}}</h1>
 <div *ngFor="let chapter of manga.chapters; let i=index">
-  <!-- <p>{{chapter[3]}} : {{chapter[2]}}</p> -->
-  <a h></a>
   <a [routerLink]="[ chapter[3] ]" routerLinkActive="active">{{chapter[2]}}</a>
 </div>

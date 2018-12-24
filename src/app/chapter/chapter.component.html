@@ -1,9 +1,1 @@
-<p>
-  chapter works!
-</p>
-<div class="col-sm-12" *ngFor="let image of images; let i = index" [attr.data-index]="i">
-  <!-- <p>{{image[1]}}</p> -->
-  <!-- <img [lazyLoad]="cdnURL + image[1]" [alt]="image[0]"> -->
-  <!-- <p>{{cdnURL}}{{image[1]}}</p> -->
-  <img [lazyLoad]="image" alt="image">
-</div>
+<div class="row" #imageContainer></div>

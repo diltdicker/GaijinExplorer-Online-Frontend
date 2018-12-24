@@ -1,37 +1,13 @@
-<!-- <div *xl>
-  <p>XL</p>
-</div>
-<div *lg>
-  <p>LG</p>
-</div>
-<div *md>
-  <p>MD</p>
-</div>
-<div *sm>
-  <p>SM</p>
-</div>
-<div *xs>
-  <p>XS</p>
-</div>
-<div *showItBootstrap="['xl','lg', 'md', 'sm']">
-  <p>XL - SM</p>
-  <button type="button" class="btn btn-primary">Simple demo</button>
-</div>
-<div *xs> only xs</div> -->
-
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
-
   <!-- Brand -->
   <div class="col-sm-3">
     <a class="navbar-brand" routerLink="/" routerLinkActive="active">Gaijin Explorer Online</a>
   </div>
-
   <!-- Toggler/collapsibe Button -->
   <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
     <span class="navbar-toggler-icon"></span>
   </button> -->
-
   <!-- Navigation Items -->
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
     <!-- <ul class="navbar-nav">
@@ -46,14 +22,6 @@
       </li>
     </ul> -->
   </div>
-
-  <!-- <div class="justify-content-right">
-    <form class="form-inline" action="/action_page.php">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search">
-      <button class="btn btn-secondary" type="button">Search</button>
-    </form>
-  </div> -->
-
   <div class="col-sm-5 justify-content-right" style="margin-top:5px;">
     <div class="input-group">
       <input type="text" placeholder="Search" #searchInput class="form-control" (keyup.enter)="onSearch(searchInput.value)">
@@ -64,11 +32,4 @@
       </span>
     </div>
   </div>
-
-  
-  <!-- Search Bar -->
-  <!-- <form class="form-inline" action="/action_page.php">
-    <input class="form-control mr-sm-2" type="text" placeholder="Search">
-    <button class="btn btn-success" type="submit">Search</button>
-  </form> -->
 </nav>
